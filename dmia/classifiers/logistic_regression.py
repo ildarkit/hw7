@@ -143,8 +143,8 @@ class LogisticRegression:
         dw = np.zeros_like(self.w)  # initialize the gradient as zero
         loss = 0
         # Compute loss and gradient. Your code should not contain python loops.
-        h = self.sigmoid(np.dot(X_batch, self.w))
-        dw = np.dot(X_batch.T, h - y_batch)       # gradient
+        h = self.sigmoid(sparse.csr_matrix.dot(X_batch, self.w))
+        dw = sparse.csc_matrix.dot(X_batch.T, h - y_batch)       # gradient
         class1_cost = -y_batch * np.log(h)
         class2_cost = (1 - y_batch) * np.log(1 - h)
         loss = class1_cost - class2_cost
@@ -153,7 +153,7 @@ class LogisticRegression:
         # Right now the loss is a sum over all training examples, but we want it
         # to be an average instead so we divide by num_train.
         # Note that the same thing must be done with gradient.
-        n = len(X_batch)
+        n = X_batch.shape[0]
         loss /= n
         dw /= n
 
