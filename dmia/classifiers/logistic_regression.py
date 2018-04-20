@@ -46,7 +46,7 @@ class LogisticRegression:
             # Hint: Use np.random.choice to generate indices. Sampling with         #
             # replacement is faster than sampling without replacement.              #
             #########################################################################
-            indices = np.random.choice(X, batch_size)
+            indices = np.random.choice(num_train, batch_size)
             X_batch = X[indices]
             y_batch = y[indices]
 
@@ -62,7 +62,6 @@ class LogisticRegression:
             # TODO:                                                                 #
             # Update the weights using the gradient and the learning rate.          #
             #########################################################################
-            gradW /= len(X_batch)
             gradW *= learning_rate
             self.w -= gradW
             #########################################################################
@@ -94,8 +93,8 @@ class LogisticRegression:
         # Implement this method. Store the probabilities of classes in y_proba.   #
         # Hint: It might be helpful to use np.vstack and np.sum                   #
         ###########################################################################
-        h = self.sigmoid(np.dot(X, self.w))
-        y_proba = np.vstack((h, h - 1, ))
+        h = self.sigmoid(X.dot(self.w))
+        y_proba = np.vstack((1 - h, h))
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -143,8 +142,8 @@ class LogisticRegression:
         dw = np.zeros_like(self.w)  # initialize the gradient as zero
         loss = 0
         # Compute loss and gradient. Your code should not contain python loops.
-        h = self.sigmoid(sparse.csr_matrix.dot(X_batch, self.w))
-        dw = sparse.csc_matrix.dot(X_batch.T, h - y_batch)       # gradient
+        h = self.sigmoid(X_batch.dot(self.w))
+        dw = X_batch.T.dot(h - y_batch)      # gradient
         class1_cost = -y_batch * np.log(h)
         class2_cost = (1 - y_batch) * np.log(1 - h)
         loss = class1_cost - class2_cost
